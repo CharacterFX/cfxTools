@@ -1,0 +1,3 @@
+1. Copy the modules folder to your maya documents folder for example "C:\Users\*username*\Documents\maya\modules", if the modules directory doesnt exist, create it.
+2. Open the module file 'cfxTools.mod' and edit the path to point to where you have put the repository. "C:\Users\*username*\downloadedMayaModules\cfxTools" (this can be anywhere) the line should look like this "+ cfxTool 0.1 E:\Dropbox(CharacterFX)\cfxTools"
+3. Start Maya
