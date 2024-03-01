@@ -6,7 +6,7 @@ import cfx.metaSystem as rmeta
 class ikFkSwitcher(object):
     
     def __init__(self):
-        self.__generic = ['self.__generic', 'arm', 'leg']
+        self.__generic = ['generic', 'arm', 'leg']
         self.__constraints = []
         self.__locs = []
         self.__testChannels = ['x','y','z']
@@ -31,20 +31,18 @@ class ikFkSwitcher(object):
 
         for ct in ctrls:
 
-            #nameSp = ct.rpartition(":")[0]
             setupDataNode = ''
             ikSwitchCtrl = ''
-            
-            #print("\nTesting for "+ct+".setupData")
+
             if cmds.objExists(ct+".setupData"):
                 setupDataNode = cmds.listConnections(ct+".setupData",s=True,d=False)[0]
-                #ct = nameSp+":"+ct
+
             else:
                 cmds.error("\nNo setup data on ctrl selected\n")
                 
             ikSwitchCtrl = cmds.listConnections(setupDataNode+".theSwitchControl",s=0,d=1)[0]
             ikTrnControl = cmds.listConnections(setupDataNode+".ikTrnControl",s=0,d=1)[0]
-            
+
             if cmds.objExists(ikSwitchCtrl+".fkIk"):
                 
                 ikAttr = cmds.getAttr(ikSwitchCtrl+".fkIk")
@@ -82,7 +80,6 @@ class ikFkSwitcher(object):
                                 keyit = cmds.keyframe(fkctrl, attribute= chn, sl=False, q=True, tc=True)
                                 
                                 if keyit is not None:
-                                    #print fkctrl+'.'+chn+' ', keyit
                                     cmds.setKeyframe(fkctrl+'.'+chn)
                         
                     #if in FK switch to IK    
@@ -107,7 +104,7 @@ class ikFkSwitcher(object):
                         #copy attrs for reverse setups
                         allUD = cmds.listAttr(setupDataNode,ud=True)
                         justCopyAttrs = [s for s in allUD if s.startswith('_')]
-                        #print justCopyAttrs
+
                         for jc in justCopyAttrs:
                             cmds.setAttr(ikTrnControl+'.'+jc[1:], cmds.getAttr(setupDataNode+'.'+jc))
                             
@@ -119,7 +116,6 @@ class ikFkSwitcher(object):
                             keyit = cmds.keyframe(ikTrnControl, attribute= chn, sl=False, q=True, tc=True)
                             
                             if keyit is not None:
-                                #print ikTrnControl+'.'+chn+' ', keyit
                                 cmds.setKeyframe(ikTrnControl+'.'+chn)
                         
                     cmds.setAttr(ikSwitchCtrl+".fkIk", not ikAttr)
@@ -140,16 +136,14 @@ class ikFkSwitcher(object):
             metaSystemsToBake = [metaSystemsToBake]
 
         metaNodes = []
-        print 'Finding MetaSystems: ', metaSystemsToBake
+        print('Finding MetaSystems: ', metaSystemsToBake)
         for ms in metaSystemsToBake:
-            print ms
             metaNodesRet = self.__meta.findMeta(ms)
-            print 'found these: ', metaNodesRet
+            print('found these: ', metaNodesRet)
             if len(metaNodesRet) > 0:
                 for mnr in metaNodesRet:
                     metaNodes.append(mnr)
 
-        print metaNodes
         if len(metaNodes) > 0:
             self.bakeRange(metaNodes)
         else:
@@ -176,7 +170,7 @@ class ikFkSwitcher(object):
 
                 isIk = cmds.getAttr(theIkSwitch+'.fkIk')
 
-                print 'sending ', theIkSwitch
+                print('sending ', theIkSwitch)
                 self.swap(theIkSwitch)
 
                 if isIk:

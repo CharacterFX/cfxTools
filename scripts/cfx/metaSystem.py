@@ -1,14 +1,77 @@
-import rgTools.rgSettings as rigset
+import cfx.systemSettings as sysSet
 
 import maya.cmds as cmds
 
-reload(rigset)
+import cfx.moduleTools as mt
+mod = mt.moduleTools()
+mod.reload([sysSet])
 
 class metaSystem(object):
     
     def __init__(self):
         
-        self.__settings = rigset.rgSettings()
+        self.__settings = sysSet.sysSettings()
+
+    def metaGUI(self):
+
+        if cmds.window("metaGUI", exists = True):
+            cmds.deleteUI("metaGUI")
+        
+        windowWidth = 400
+        windowHeight = 700
+        
+        window = cmds.window("metaGUI", title = "Meta nodes", w = windowWidth, h = 300, mnb = False, mxb = False, sizeable = True)
+
+        cmds.columnLayout()
+        self.metaNodeSystemsMenu = cmds.optionMenu( label='Meta System', cc = self.updateListedNodes )
+        cmds.menuItem( label='All' )
+        cmds.menuItem( label='character' )
+        cmds.menuItem( label='engine' )
+        cmds.menuItem( label='deformer' )
+        cmds.menuItem( label='facial' )
+        cmds.menuItem( label='face' )
+        cmds.menuItem( label='faceShape' )
+        cmds.menuItem( label='body' )
+        cmds.menuItem( label='bodySdks' )
+        cmds.menuItem( label='bodyShapes' )
+        cmds.menuItem( label='mocap' )
+        cmds.menuItem( label='mocapDestination' )
+        cmds.menuItem( label='mocapSource' )
+
+        self.metaTextList = cmds.iconTextScrollList(allowMultiSelection=True, dcc = self.selectMetaNode)
+        #cmds.popupMenu(self.metaTextList, pmc = self.runMenuCommand)
+        #cmds.menuItem('delete')
+        #cmds.menuItem('select')
+
+        cmds.button(label = "Delete Selected Nodes", c=self.deleteSelectedMenuNodes)
+     
+        self.updateListedNodes()
+
+        cmds.showWindow(window)
+
+    def updateListedNodes(self, *args):
+
+        metaType = cmds.optionMenu( self.metaNodeSystemsMenu, q=1, v=1 )
+        if metaType == 'All':
+            metaNodes = self.findMeta()
+        else:
+            print(metaType)
+            metaNodes = self.findMeta(metaType)
+            print(metaNodes)
+
+        cmds.iconTextScrollList(self.metaTextList, e = 1, ra = 1)
+        cmds.iconTextScrollList(self.metaTextList, e = 1, append = metaNodes)
+
+    def selectMetaNode(self, *args):
+
+        metaType = cmds.iconTextScrollList( self.metaTextList, q=1, si=1 )
+        cmds.select(metaType,r=1)
+
+    def deleteSelectedMenuNodes(self, *args):
+
+        metaType = cmds.iconTextScrollList( self.metaTextList, q=1, si=1 )
+        cmds.delete(metaType)
+        self.updateListedNodes()
 
     def connectToSystem(self, setupDataNode, objectToConnect, attrToConnectTo, objectAttr = 'setupData', multiAttr = False):
 
@@ -16,7 +79,6 @@ class metaSystem(object):
 
             if cmds.objExists(setupDataNode+"."+attrToConnectTo) is False:
                 cmds.addAttr(setupDataNode, ln= attrToConnectTo, at="message" )
-            #print 'attemptoing ', objectToConnect
             if cmds.objExists(objectToConnect+"."+objectAttr) is False:
                 cmds.addAttr(objectToConnect, ln= objectAttr, at="message" , multi = multiAttr )
             alreadyConnected = cmds.listConnections(objectToConnect+'.'+objectAttr,s=1,d=0)

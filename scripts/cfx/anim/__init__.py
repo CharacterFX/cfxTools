@@ -1,1 +1,1 @@
-print 'CFX Anim Tools Init'
+print('CFX Anim Tools Init')

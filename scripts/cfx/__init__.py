@@ -1,1 +1,1 @@
-print 'Init CFX Tools'
+print('Init CFX Tools')
