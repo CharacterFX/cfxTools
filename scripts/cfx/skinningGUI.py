@@ -3,19 +3,16 @@ A GUI to consolidate the various skinning tools
 Author: John Riggs
 """
 
+import cfx.autoSaveWeights as asw
+import cfx.skinningTools as sts
+import cfx.vertexTools as vt
+import cfx.selectionTools as selt
+import cfx.fileUtils as fu
 
-import cig.rigging.autoSaveWeights as asw
-import cig.rigging.skinningTools as sts
-import cig.rigging.vertexTools as vt
-import cig.rigging.selectionTools as selt
-import cig.utils.fileUtils as fu
-import cig.rigging.maxVertexInfluence as mvi
-
-reload(mvi)
-reload(vt)
-reload(asw)
-reload(sts)
-
+import importlib
+modulesToReload = [vt, asw, sts]
+for mtr in modulesToReload:
+    importlib.reload(mtr)
 
 import maya.cmds as cmds
 import os
@@ -26,14 +23,13 @@ class skinningGUI(object):
 
     def __init__(self):
 
-        print 'skinningGUI v1.0'
+        print('skinningGUI v1.0')
 
         self.__futil = fu.fileUtils()
         self.__weighter = asw.autoSaveWeights()
         self.__skinner = sts.skinningTools() 
         self.__verter = vt.vertexTools()
         self.__selTool = selt.selectionTools()
-        self.__vertTest = mvi.MaxVertexInfluence()
 
         self.__skinningInfluencesWindow = ''
 
@@ -514,14 +510,11 @@ class skinningGUI(object):
         else:
             cmds.file(cmds.optionVar(q=characterVar),o=True,f=True)
 
-        print 'loaded file: '+cmds.optionVar(q=characterVar)
+        print('loaded file: '+cmds.optionVar(q=characterVar))
 
     def populateWeightsFiles(self, *args):
     
         weightFiles = self.__futil.returnFiles(cmds.textField("weightsFile", q=True, text=True)+'/', ['weights'])
-        #print 'weights files'
-        #print cmds.textField("weightsFile", q=True, text=True)
-        #print weightFiles
         cmds.textScrollList("characterWeightFiles", edit = True, ra = True)
 
         for each in weightFiles:   
@@ -530,7 +523,7 @@ class skinningGUI(object):
     def loadInfluencesFromFile(self, *args):
         
         theWeightsFile = cmds.textField("weightsFile", q=True, text=True)+'/'+cmds.textScrollList("characterWeightFiles", q=True, si=True)[0]+'.weights'
-        print theWeightsFile
+        print(theWeightsFile)
         infs = self.__futil.returnInfsFromWeightsFile(theWeightsFile)
         if len(infs) != 0:
             cmds.textScrollList("infsInFile", edit = True, ra = True)
@@ -546,7 +539,7 @@ class skinningGUI(object):
 
     def weightFileInformation(self, *args):
 
-        print 'need to get weights info'
+        print('need to get weights info')
         
     #------------------------SUPPORT PROCS
 
@@ -578,7 +571,7 @@ class skinningGUI(object):
         self.__futil.checkOrMakeDirectory(weightsDir)
         self.__weighter.exportWeights(weightsDir)
 
-        print 'openning file: '+justMeshFile
+        print('openning file: '+justMeshFile)
         cmds.file(justMeshFile, f=True,o=True)
 
         toLoad = 'male'
@@ -657,7 +650,7 @@ class skinningGUI(object):
                 theSkin = self.__skinner.findRelatedSkinCluster(vert.rpartition('.')[0])
                 self.__skinner.copyAddWeights(inf, cmds.skinPercent(theSkin, vert, t = inf, query=True, value=True), self.__weightsDictionary)
 
-        print self.__weightsDictionary
+        print(self.__weightsDictionary)
 
 
     def pasteVertexWeightsShell(self, *args):
@@ -684,45 +677,6 @@ class skinningGUI(object):
         theSkin = self.__skinner.findRelatedSkinCluster(verts[0].rpartition('.')[0])
         cmds.skinPercent( theSkin,transformValue= self.__skinner.convertWeightDictToList(self.__weightsDictionary), normalize = True)
 
-        """
-        for vert in verts:
-            #no idea what I was trying to do here
-            for key in self.__weightsDictionary:
-
-                #print 'will normalize here'
-                if len(self.__weightsDictionary) == 1:
-                    allData = self.__weightsDictionary[key]
-                else:
-                    print 'normalize weights'
-                    for key in self.__weightsDictionary.keys():
-                        allKeys =  self.__weightsDictionary.get(key)
-                        for ak in allKeys:
-                            #print ak
-                            if ak not in allData:
-                                #print 'not in'
-                                allData[ak] = allKeys.get(ak)
-                                
-                            else:
-                                allData[ak] = allData.get(ak) + allKeys.get(ak)
-                    #self.__allWeightsDictionary
-
-                self.__skinner.normalizeWeightsReplaceDict(allData)
-                print 'allData'
-                print allData
-
-
-            #setting it 3 times because it doesnt seem to set it correctly with just once
-            for x in range(3):
-                for weightData in allData.keys():
-                    print 'weightData'
-                    print weightData
-                    print 'allKeys'
-                    print allData
-                    print 'allKeys.get(weightData)'
-                    print allData.get(weightData)
-                    cmds.skinPercent(frsc.findRelatedSkinCluster(vert.rpartition('.')[0]),vert, tv = (weightData, allData.get(weightData)) )
-                    """
-
     #this takes one verts weights and pastes them to the whole shell.
     def copyPasteVertWeights(self, *args):
 
@@ -742,8 +696,8 @@ class skinningGUI(object):
             cmds.error('no weights in buffer, please copy some')
 
         else:
-            print 'number of verts '+str(len(self.__weightsDictionary))
-            print self.__weightsDictionary
+            print('number of verts '+str(len(self.__weightsDictionary)))
+            print(self.__weightsDictionary)
 
 
     def transferMayaWeights(self, *args):
@@ -769,8 +723,6 @@ class skinningGUI(object):
 
         for mesh in selected:
             for x in range(1, 5):
-
-                #print('transfering to '+mesh+'_lod'+str(x))
                 if cmds.objExists(mesh+'_lod'+str(x)):
                     
                     if self.__skinner.isSkinned(mesh+'_lod'+str(x)):
@@ -788,12 +740,11 @@ class skinningGUI(object):
                         pruneVerts = self.__verter.returnInfsWithMoreWeights(mesh+'_lod'+str(x), 9)
                         print('pruneVerts '+str(len(pruneVerts))+' on mesh'+mesh+'_lod'+str(x))
                         if len(pruneVerts) != 0:
-                            print 'pruning '
-                            print theSkin
-                            print pruneVerts
+                            print('pruning ')
+                            print(theSkin)
+                            print(pruneVerts)
                             cmds.skinPercent( theSkin, pruneVerts, pruneWeights=0.001 )
 
-                #print('transfering to '+mesh+'_LOD'+str(x))
                 if cmds.objExists(mesh+'_LOD'+str(x)):
 
                     if self.__skinner.isSkinned(mesh+'_LOD'+str(x)):
@@ -810,9 +761,9 @@ class skinningGUI(object):
                         pruneVerts = self.__verter.returnInfsWithMoreWeights(mesh+'_LOD'+str(x), 9)
                         print('pruneVerts '+str(len(pruneVerts))+' on mesh'+mesh+'_LOD'+str(x))
                         if len(pruneVerts) != 0:
-                            print 'pruning '
-                            print theSkin
-                            print pruneVerts
+                            print('pruning ')
+                            print(theSkin)
+                            print(pruneVerts)
                             cmds.skinPercent( theSkin, pruneVerts, pruneWeights=0.001 )
 
   
@@ -846,8 +797,8 @@ class skinningGUI(object):
             cmds.error('no influences exist from file')
 
         if len(dontExist) > 0:
-            print 'These influences do not exist in the scene:'
-            print dontExist
+            print('These influences do not exist in the scene:')
+            print(dontExist)
 
 
     #old way, using a dictionary
@@ -921,7 +872,8 @@ class skinningGUI(object):
         vertsFromGui = cmds.textScrollList('verts4infs',q=True, si = True)
 
         if vertsFromGui is None:
-            cmds.error('Please select at least one vertex from the list to the left')
+            #cmds.error('Please select at least one vertex from the list to the left')
+            vertsFromGui = cmds.ls(sl=1,fl=1)
 
         allInfs = []
         for vert in vertsFromGui:
@@ -1005,5 +957,5 @@ class skinningGUI(object):
 
         for obj in prunedList:
             skinClust = self.__skinner.findRelatedSkinCluster(obj)
-            print 'Prunning '+obj, skinClust
+            print('Prunning '+obj, skinClust)
             cmds.skinPercent(skinClust , obj, pruneWeights = pruneValue)

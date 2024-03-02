@@ -14,9 +14,10 @@ import cfx.insertBufferGroup as ibg
 import cfx.dynamicPOconstraint as dpo
 import cfx.glueToClosestPoint as gtcp
 
-import cfx.moduleTools as mt
-mod = mt.moduleTools()
-mod.reload([rmeta ,ms ,attru ,sysSet ,gtcp] )
+import importlib
+modulesToReload = [rmeta, ms, attru, sysSet, gtcp]
+for mtr in modulesToReload:
+    importlib.reload(mtr)
 
 import sys
 import maya.cmds as cmds
@@ -179,7 +180,6 @@ class controlShapeSystem(object):
         @param newShape: what shape to switch to 
         @param ctrlScale: scale of the control        
         '''
-        #print 'swapShape', ctrl, newShape
         connections = []
 
         isReshapable = False
@@ -301,8 +301,6 @@ class controlShapeSystem(object):
         @param ctrlExtension: extension to add to control "LeftArm" becomes "LeftArm_CTRL"
         @param doScale: allow the control to scale
         '''
-        #ctrlExtension = self.__settings.ctrlExtension
-        #print 'ctrlExtension: ', ctrlExtension
         #quick test to make sure we pass an array
         if isinstance(items, str):# or isinstance(items, unicode):
             items = [items]
@@ -332,7 +330,6 @@ class controlShapeSystem(object):
         if topTransform == []:
             doTop = False
 
-        #print 'topTransform: ',topTransform,doTop
         for item in items:
 
             theParent = cmds.listRelatives(item, p=True)
@@ -384,7 +381,6 @@ class controlShapeSystem(object):
                 cmds.parent(cmpa,topTransform)
 
             if theParent != None:
-                #print cmpa, theParent[0]
                 cmds.xform(cmpa ,ws=True,m=(cmds.xform(theParent[0],q=True,ws=True,m=True)))
                 pcon = cmds.pointConstraint(theParent[0],cmpa,o=[0,0,0],w=1)[0]
                 ocon = cmds.orientConstraint(theParent[0],cmpa,o=[0,0,0],w=1)[0]
@@ -404,17 +400,13 @@ class controlShapeSystem(object):
 
             #connect ctrl visibility
             if doTop:
-                #print 'doVisGroup: ', doVisGroup
                 if doVisGroup:
                     if cmds.objExists(item+'.visGroup'):
                         if cmds.getAttr(item+'.visGroup') != '':
                             hideGroup = cmds.getAttr(item+'.visGroup')
                             if hideGroup is not None:
-                                #print 'hideGroup : ', hideGroup, topTransform[0]
                                 if cmds.objExists(topTransform[0]):
-                                    #print 'topTransform[0]+ hideGroup: ', topTransform[0]+'.'+ hideGroup
                                     if not cmds.objExists(topTransform[0]+'.'+ hideGroup):
-                                        #print 'ADDING ATTR TO TOP'
                                         cmds.addAttr(topTransform[0],ln=hideGroup,at="bool", min=0, max=1, dv = 0)
                                         cmds.setAttr(topTransform[0]+'.'+hideGroup, 0, e=True,keyable=True)
 
@@ -438,8 +430,6 @@ class controlShapeSystem(object):
                 self.__attrUtil.transfer(item , ctrl, attr)
 
             #connect with message attr to link control and controlled
-            #if self.__settings.debug: #print 'adding message attr to  ', item, ' connected to   ', ctrl
-
             if not cmds.objExists(item+'.'+self.__settings.control):
                 cmds.addAttr(item, ln=self.__settings.control,at="message")
             if not cmds.objExists(ctrl+'.'+self.__settings.controlled):
@@ -451,12 +441,11 @@ class controlShapeSystem(object):
 
             if cmds.objExists( item+'.rotOrder'):
                 order = cmds.getAttr(item+'.rotOrder')
-                #print 'Rot order is ', order, item, ctrl
+
             if cmds.objExists( item+'.originalJnt'):
                 originalJnt = cmds.listConnections(item+'.originalJnt',s=1,d=0)
                 if originalJnt:
                     order = cmds.getAttr(originalJnt[0]+'.rotOrder')
-                    #print 'Rot order is ', order, item, ctrl
 
             if order:
                 if order == 1:
@@ -754,10 +743,7 @@ class controlShapeSystem(object):
                 if fromSide in theCtrl :
                     for fs in fullSides:
                         toCtrl = ctrl.replace(fromSide, toSide)
-                        #chop = len(fromSide)
-                        #toCtrl = namespace + ":"+toSide+theCtrl[chop:]
 
-                        #print toCtrl, fs[0], fs[0] in toCtrl
                         if fs[0] in toCtrl:
                             toCtrl = toCtrl.replace(fs[0], fs[1])
                         #ADD CHECKSUM TO MAKE SURE ITS THE SAME SHAPE
@@ -801,7 +787,6 @@ class controlShapeSystem(object):
 
                 if fromSide in ctrl:
                     toSide = self.__mirrorTool.returnMirrorPartner(ctrl)
-                    #print ctrl, toSide
 
                     if toSide is not None:
                         if cmds.objExists(toSide):
@@ -873,9 +858,7 @@ class controlShapeSystem(object):
                             cmds.setAttr(ctrl+".side", 0)
                             cmds.setAttr(ctrl+".type", 18)
                             cmds.setAttr(ctrl+".otherType", ctrlName, type="string")
-            #else:
-                #print 'Control is set to not allow recoloring, skipping: ', ctrl
-                
+
     def createParticleForControl(self, theObject):
     
         position = cmds.xform(theObject, q=1, t=1, ws=1)

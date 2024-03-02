@@ -13,14 +13,8 @@ import maya.cmds as cmds
 
 import logging
 
-import platform
-pythonVer = int(platform.python_version().split(".")[0])
-
-if pythonVer > 2:
-    import importlib
-    importlib.reload(sysSet)
-else:
-    reload(sysSet)
+import importlib
+importlib.reload(sysSet)
 
 logging.basicConfig()
 log = logging.getLogger(__name__)
@@ -30,10 +24,7 @@ class fileUtils(object):
     
     def __init__(self):
         self.__settings = sysSet.sysSettings()
-        #resources_dir = path.join(path.dirname(__file__), 'resources')
-        #self.__controlLocation = path.join(path.dirname(__file__), 'ctrlShapes')
         self.__controlLocation = self.__settings.controlLocation
-        #print self.__controlLocation
         self.__ikScriptsLocation = self.__settings.ikSystems #path.join(path.dirname(__file__), 'ikSystem')
         self.__ikAutoSetupsLocation = self.__settings.autoSetupsDir #path.join(path.dirname(__file__), 'autoSetup')
         self.__rootLocation =  self.__settings.installLocation #path.join(path.dirname(__file__))
@@ -77,9 +68,12 @@ class fileUtils(object):
 
         return allFiles
 
-    #this returns all files in the directory and sub directories
     def returnAllFiles(self, directory, extension = []):
-
+        '''
+        :param directory: The directory to search
+        :param extension: The File Extension
+        :return:
+        '''
         allFiles = []
         for root, dirnames, filenames in os.walk(directory):
             for filename in fnmatch.filter(filenames, extension):
@@ -121,9 +115,7 @@ class fileUtils(object):
     def bumpFileVersion(self, directory, extension):
         
         newestFile = self.returnNewestDate(directory, extension)
-        #print 'newestFile ', newestFile
         if newestFile is None:
-            #print 'directory.split(\'/\') ', directory.split('/'), directory.split('/')[:-3][-1]
             newName = directory+'/'+directory.split('/')[:-3][-1]+'_'+directory.split('/')[-1]+'.01.ma'
             cmds.warning('No files in that directory returning a new name: ', newName)
 
@@ -131,7 +123,6 @@ class fileUtils(object):
 
         else:
             splited = newestFile.split('.')
-            #print 'splited '+str(len(splited))
             if len(splited) == 2:
                 return splited[0]+'.01.'+splited[1]
             splited[-2] = str(int(splited[-2])+1)
@@ -215,20 +206,7 @@ class fileUtils(object):
 
     def returnWeapons(self,rootDir):
 
-        #print 'rootDir ', rootDir
-        returnThese = []
         files = self.returnAllFiles(rootDir,'attach*.png')
-        #print 'allFiles ', files
-        """
-        for fl in files:
-            
-            justFile = fl.split('\\')[-1]
-            print justFile, justFile.startswith('attach_')
-            if justFile.startswith('attach_'):
-                returnThese.append(justFile.replace('attach_', '').split('.')[0])
-                self.__weaponFiles[justFile] = fl.replace('\\','/')
-        """
-        #return self.__weaponFiles
         return files
 
     def exportHeirarchyAsText(self, exportFile):
@@ -245,7 +223,7 @@ class fileUtils(object):
                 if depth > levels: 
                     return
                 print("  " * depth, ob)
-                filePrint = ("  " * depth)+ob
+                filePrint= ("  " * depth)+ob
                 heirFile.write(filePrint) 
                 heirFile.write('\n')
 

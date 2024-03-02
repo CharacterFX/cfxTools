@@ -3,8 +3,8 @@ a class to auto save and load skinning weights
 Autho: John Riggs
 """
 
-import rgTools.fileUtils as fu
-import rtsp.skinningTools as sts
+import cfx.fileUtils as fu
+import cfx.skinningTools as sts
 
 import maya.cmds as cmds
 import os

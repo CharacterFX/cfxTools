@@ -7,9 +7,10 @@ import cfx.addOrMakeGroup as aomg
 import maya.cmds as cmds
 import maya.mel as mel
 
-import cfx.moduleTools as mt
-mod = mt.moduleTools()
-mod.reload([co, rc])
+import importlib
+modulesToReload = [co, rc]
+for mtr in modulesToReload:
+    importlib.reload(mtr)
 
 class glueToClosestPoint(object):
 

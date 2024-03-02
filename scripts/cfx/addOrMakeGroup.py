@@ -14,7 +14,6 @@ def addOrMakeGroup(itemsToAdd, groupName):
             parents = cmds.listRelatives(ita,p=True)
             
             if parents is None or parents[0] != theGroup:
-                #print 'parenting in add or make group'
                 cmds.parent(itemsToAdd, theGroup)
         
     else:
@@ -23,7 +22,6 @@ def addOrMakeGroup(itemsToAdd, groupName):
         for ita in itemsToAdd:
             parents = cmds.listRelatives(ita,p=True)
             if parents is None or parents[0] != theGroup:
-                #print 'parenting in add or make group 2'
                 cmds.parent(itemsToAdd, theGroup)
         
     return theGroup

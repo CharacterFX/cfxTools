@@ -11,7 +11,6 @@ def returnUseableChannels(theObject, unlockedChannels = True):
     lockedChannel = []
 
     isLocked = cmds.getAttr(theObject+'.tx',l=True)
-    #print 'tx isLocked '+str(isLocked)
     isConnected = cmds.listConnections(theObject+'.tx', s = True, d=False)
 
     if isConnected == None:
@@ -21,10 +20,7 @@ def returnUseableChannels(theObject, unlockedChannels = True):
         returnChannels.remove('tx')
         lockedChannel.append('tx')
 
-    #elif cmds.transformLimits(theObject, q=True,etx=True)[0] and cmds.transformLimits(theObject, q=True,etx=True)[1] is True:
-        #lowLimit = cmds.transformLimits(theObject, q=True,tx=True)
-    if isLocked:#lowLimit[0] == lowLimit[1] or isLocked:
-        #print 'adding tx'
+    if isLocked:
         returnChannels.remove('tx')
         lockedChannel.append('tx')
 
@@ -37,9 +33,8 @@ def returnUseableChannels(theObject, unlockedChannels = True):
     if len(isConnected) > 0:
         returnChannels.remove('ty')
         lockedChannel.append('ty')
-    #elif cmds.transformLimits(theObject, q=True,ety=True)[0] and cmds.transformLimits(theObject, q=True,ety=True)[1] is True:
-        #lowLimit = cmds.transformLimits(theObject, q=True,ty=True)
-    if isLocked:# lowLimit[0] == lowLimit[1] or isLocked:
+
+    if isLocked:
         returnChannels.remove('ty')
         lockedChannel.append('ty')
 
@@ -52,9 +47,8 @@ def returnUseableChannels(theObject, unlockedChannels = True):
     if len(isConnected) > 0:
         returnChannels.remove('tz')
         lockedChannel.append('tz')
-    #elif cmds.transformLimits(theObject, q=True,etz=True)[0] and cmds.transformLimits(theObject, q=True,etz=True)[1] is True:
-        #lowLimit = cmds.transformLimits(theObject, q=True,tz=True)
-    if isLocked:# lowLimit[0] == lowLimit[1] or isLocked:
+
+    if isLocked:
         returnChannels.remove('tz')
         lockedChannel.append('tz')
 
@@ -67,9 +61,8 @@ def returnUseableChannels(theObject, unlockedChannels = True):
     if len(isConnected) > 0:
         returnChannels.remove('rx')
         lockedChannel.append('rx')
-    #elif cmds.transformLimits(theObject, q=True,erx=True)[0] and cmds.transformLimits(theObject, q=True,erx=True)[1] is True:
-        #lowLimit = cmds.transformLimits(theObject, q=True,rx=True)
-    if isLocked:# lowLimit[0] == lowLimit[1] or isLocked:
+
+    if isLocked:
         returnChannels.remove('rx')
         lockedChannel.append('rx')
 
@@ -82,9 +75,8 @@ def returnUseableChannels(theObject, unlockedChannels = True):
     if len(isConnected) > 0:
         returnChannels.remove('ry')
         lockedChannel.append('ry')
-    #elif cmds.transformLimits(theObject, q=True,ery=True)[0] and cmds.transformLimits(theObject, q=True,ery=True)[1] is True:
-        #lowLimit = cmds.transformLimits(theObject, q=True,ry=True)
-    if isLocked:# lowLimit[0] == lowLimit[1] or isLocked:
+
+    if isLocked:
         returnChannels.remove('ry')
         lockedChannel.append('ry')
 
@@ -97,9 +89,8 @@ def returnUseableChannels(theObject, unlockedChannels = True):
     if len(isConnected) > 0:
         returnChannels.remove('rz')
         lockedChannel.append('rz')
-    #elif cmds.transformLimits(theObject, q=True,erz=True)[0] and cmds.transformLimits(theObject, q=True,erz=True)[1] is True:
-        #lowLimit = cmds.transformLimits(theObject, q=True,rz=True)
-    if isLocked:# lowLimit[0] == lowLimit[1] or isLocked:
+
+    if isLocked:
         returnChannels.remove('rz')
         lockedChannel.append('rz')
 
@@ -108,14 +99,12 @@ def returnUseableChannels(theObject, unlockedChannels = True):
 
     if isConnected == None:
         isConnected = []
-    #print 'isConnected', isConnected, len(isConnected)
+
     if len(isConnected) > 0:
         returnChannels.remove('sx')
         lockedChannel.append('sx')
-    #elif cmds.transformLimits(theObject, q=True,esx=True)[0] and cmds.transformLimits(theObject, q=True,esx=True)[1] is True:
-        #lowLimit = cmds.transformLimits(theObject, q=True,sx=True)
-        #print 'ScaleX ', isLocked
-    if isLocked: #lowLimit[0] == lowLimit[1] or isLocked:
+
+    if isLocked:
         returnChannels.remove('sx')
         lockedChannel.append('sx')
 
@@ -128,9 +117,8 @@ def returnUseableChannels(theObject, unlockedChannels = True):
     if len(isConnected) > 0:
         returnChannels.remove('sy')
         lockedChannel.append('sy')
-    #elif cmds.transformLimits(theObject, q=True,esy=True)[0] and cmds.transformLimits(theObject, q=True,esy=True)[1] is True:
-        #lowLimit = cmds.transformLimits(theObject, q=True,sy=True)
-    if isLocked:# lowLimit[0] == lowLimit[1] or isLocked:
+
+    if isLocked:
         returnChannels.remove('sy')
         lockedChannel.append('sy')
 
@@ -143,9 +131,8 @@ def returnUseableChannels(theObject, unlockedChannels = True):
     if len(isConnected) > 0:
         returnChannels.remove('sz')
         lockedChannel.append('sz')
-    #elif cmds.transformLimits(theObject, q=True,esz=True)[0] and cmds.transformLimits(theObject, q=True,esz=True)[1] is True:
-        #lowLimit = cmds.transformLimits(theObject, q=True,sz=True)
-    if isLocked:# lowLimit[0] == lowLimit[1] or isLocked:
+
+    if isLocked:
         returnChannels.remove('sz')
         lockedChannel.append('sz')
 

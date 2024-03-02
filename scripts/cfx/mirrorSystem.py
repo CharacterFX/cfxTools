@@ -3,15 +3,15 @@ import maya.cmds as cmds
 import cfx.systemSettings as sysSet
 import cfx.returnObjectWithAttr as roa
 
-import cfx.moduleTools as mt
-mod = mt.moduleTools()
-
-mod.reload([sysSet, roa])
+import importlib
+modulesToReload = [sysSet, roa]
+for mtr in modulesToReload:
+    importlib.reload(mtr)
 
 class mirrorSystem(object):
-    
+
     def __init__(self):
-        
+
         self.__settings = sysSet.sysSettings()
         self.__attrFinder = roa.returnObjectWithAttr()
 
@@ -62,7 +62,6 @@ class mirrorSystem(object):
 
             if ctrlSide == fromSide:
                 mirrorCtrl = self.returnMirrorObject(ctrl)
-                #print 'mirrorCtrl ', ctrl, mirrorCtrl
 
                 if mirrorCtrl is None:
                     print('No mirror for, ', ctrl, ', skipping')

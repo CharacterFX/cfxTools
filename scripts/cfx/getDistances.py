@@ -152,47 +152,22 @@ class getDistances(object):
         '''
         obj1Ws = cmds.xform(object1,q=True,a=True,ws=True,t=True)
         obj2Ws = cmds.xform(object2,q=True,a=True,ws=True,t=True)
-        #print obj1Ws, obj2Ws
 
         centerPos = [((obj1Ws[0] + obj2Ws[0])/2), ((obj1Ws[1] + obj2Ws[1])/2), ((obj1Ws[2] + obj2Ws[2])/2)]
         return centerPos
 
-        """
-        tempLoc = cmds.spaceLocator(n='DELETEME')[0]
-
-        cmds.delete(cmds.pointConstraint(object1,object2,tempLoc))
-        cmds.delete(cmds.orientConstraint(object1,object2,tempLoc))
-        cmds.delete(cmds.scaleConstraint(object1,object2,tempLoc))
-
-        returnDataT = cmds.xform(tempLoc,q=True,a=True,ws=True,t=True)
-        returnDataR = cmds.xform(tempLoc,q=True,a=True,ws=True,ro=True)
-        returnDataS = cmds.xform(tempLoc,q=True,a=True,ws=True,s=True)
-
-        cmds.delete(tempLoc)
-        """
-
-        #return [returnDataT,returnDataR,returnDataS]
-
-    #types are transform, vert, joint
     def closestItem(self, theObject, fromList):#, theType = '', fromList = []):
 
         '''
         find the closest item from a list of items
         #param theObject = the object to test from
         @param fromList[] = a list of objects to test
-
+        types are transform, vert, joint
         sortedItems[0][0] is closest item
         '''
 
         itemsDict = {}
-        #allItems = []
 
-        #if theType != '':
-            #allItems = cmds.ls(type = theType)
-
-        #if len(fromList) != 0:
-            #allItems = list(set(allItems).intersection(fromList))
-            
         for item in fromList:
             itemsDict[item] = self.between(theObject, item)
 
@@ -226,8 +201,6 @@ class getDistances(object):
         previouslySelected = cmds.ls(sl=1)
 
         geo = pm.PyNode(theMesh)
-        #loc = pm.PyNode('locator1')
-        #pos = loc.getRotatePivot(space='world')
 
         pos = cmds.xform(testVert, q=1,ws=1,t=1)
          

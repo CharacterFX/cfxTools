@@ -2,9 +2,8 @@ import cfx.systemSettings as sysSet
 
 import maya.cmds as cmds
 
-import cfx.moduleTools as mt
-mod = mt.moduleTools()
-mod.reload([sysSet])
+import importlib
+importlib.reload(sysSet)
 
 class metaSystem(object):
     

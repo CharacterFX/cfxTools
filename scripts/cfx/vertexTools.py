@@ -1,4 +1,4 @@
-import rtsp.skinningTools as sts
+import cfx.skinningTools as sts
     
 import maya.cmds as cmds
 

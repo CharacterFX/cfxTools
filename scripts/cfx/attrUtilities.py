@@ -58,68 +58,6 @@ class attrUtilities(object):
                         cmds.addAttr(toObj, ln=attr, at="enum", en = cmds.attributeQuery(attr, node = fromObj,le=True)[0])
                         cmds.setAttr(toObj+'.'+attr, cmds.getAttr(fromObj+'.'+attr))
 
-    #I THINK THESE WERE MOVED TO RIGGINGATTRUTILS
-    """
-    def transferRiggingattrs(self, fromObject, toObject):
-
-        attrs = ['autoSetups', 'ikSystems', 'dynamicSetups', 'muscleSetups', 'poseSetups', 'mocapConstraints', 'animation', 'deformer', 'reverseJointAxis', 'setupOptions','poseOptions']
-        for attr in attrs:
-            self.transfer(fromObject, toObject, attr)
-
-    def addOrUpdateRiggingattrs(self, theObjects):
-
-        if isinstance(theObjects, str):
-            theObjects = [theObjects]
-
-        for theObject in theObjects:
-            #loop thru enums and build all from directory structure
-            enumsAre = ['autoSetups', 'ikSystems', 'dynamicSetups', 'muscleSetups', 'poseSetups', 'mocapConstraints']
-            currentAttr = 'none'
-            #add auto setup enum
-            for eas in enumsAre:
-                if cmds.objExists(theObject+'.'+eas):
-                    currentAttr = cmds.getAttr(theObject+'.'+eas, asString = True)
-                    cmds.deleteAttr(theObject, at =eas)
-
-                cmds.addAttr(theObject, ln=eas, at="enum", en = "none:" + ":".join(self.__futil.returnSystem(eas)))
-                #cmds.setAttr(theObject+'.'+eas, currentAttr)
-                #print 'one', ":".join(self.__futil.returnSystem(eas))
-                self.setEnumAttrWithString(theObject, eas, currentAttr)
-
-            #add control shape enum
-            shapeAttr = 'none'
-            
-            if cmds.objExists(theObject+'.controlShape'):
-                shapeAttr = cmds.getAttr(theObject+'.controlShape', asString = True)
-                cmds.deleteAttr(theObject, at ='controlShape')
-
-            cmds.addAttr(theObject, ln="controlShape", at="enum", en = "none:" + ":".join(self.__futil.returnCtrlShapes()))
-            #print 'two'
-            self.setEnumAttrWithString(theObject,'controlShape', shapeAttr)
-            #booleans
-
-            boolAttr = 0
-            for bl in ['animation', 'deformer', 'reverseJointAxis']:
-
-                if cmds.objExists(theObject + '.' + bl):
-                    boolAttr = cmds.getAttr(theObject+'.'+bl)
-                    cmds.deleteAttr(theObject, at = bl)
-                    
-                cmds.addAttr(theObject, ln = bl, at='bool')
-                cmds.setAttr(theObject+'.'+bl, boolAttr, e = True, keyable = True)
-
-            stringDefault = ''
-            for st in ['setupOptions','poseOptions']:
-
-                if cmds.objExists(theObject + '.' + st):
-                    stringDefault = cmds.getAttr(theObject+'.'+st)
-                    cmds.deleteAttr(theObject, at = st)
-
-                cmds.addAttr(theObject, ln= st, dt="string")
-                if stringDefault is not None:
-                    cmds.setAttr(theObject+'.'+st, stringDefault, type="string")
-
-    """
     def addOrUpdateAttr(self, theObject, theAttr, theValue, attrType):
 
         '''
@@ -205,7 +143,6 @@ class attrUtilities(object):
         @param fileName: the file to save as
         @param attrs: if nothing is passed then it saves all used defined attrs
         '''
-        #print 'Saving attrs for: ', objects
 
         doc = xd.Document()
         root = doc.createElement("objects")
@@ -313,9 +250,6 @@ class attrUtilities(object):
             strings = []
             enums = []
 
-        #print 'Saving Rig Description as: '
-        #print fileName
-        
         f = open(fileName, 'w')
 
         f.write(doc.toprettyxml())
@@ -339,11 +273,9 @@ class attrUtilities(object):
             
         for obj in objectNodes:
             if obj.nodeName != '#text':
-                #if self.debug: #print obj.nodeName
                 attrTypeNodes = obj.childNodes
                 for attrType in attrTypeNodes:
                     if attrType.nodeName != '#text':
-                        #if self.debug: #print attrType.nodeName
                         attrItems = attrType.attributes.items()
                         for attr in attrItems:
                             if cmds.objExists(obj.nodeName):
@@ -447,7 +379,7 @@ class attrUtilities(object):
                         lockset = lockset+'1 '
                     else:
                         lockset = lockset+'0 '
-            #print 'lockset: ', lockset
+
             LocksElement.setAttribute('locks', lockset)
 
             tx = cmds.transformLimits(obj, q=1, tx=True )
@@ -464,7 +396,6 @@ class attrUtilities(object):
                 for chn in la:
                     attrValues = attrValues + str(chn) + ' '
 
-            #print 'attrValues: ', attrValues
             LimitsElement.setAttribute('limits', attrValues)
 
         f = open(fileName, 'w')
@@ -488,8 +419,6 @@ class attrUtilities(object):
 
         objectNodes = theObjects[0].childNodes
 
-        #if self.debug: #print objectNodes
-            
         for obj in objectNodes:
             if obj.nodeName != '#text':
                 theObject = obj.nodeName
@@ -500,7 +429,7 @@ class attrUtilities(object):
                         if addNameSpace:
                             if not theObject.startswith('pup'):
                                 theObject = addNameSpace+':'+theObject
-                        #print 'Testing for: ', theObject, cmds.objExists(theObject)
+
                         if cmds.objExists(theObject):
                             if cs.nodeName == 'locked':
                                 for ai in attrItems:
@@ -520,15 +449,12 @@ class attrUtilities(object):
 
                             if cs.nodeName == 'Locks':
                                 for ai in attrItems:
-                                    #print 'ai: ', ai
                                     splitLocks = ai[1].split(' ')
-                                    #for sl in splitLocks:
                                     cmds.transformLimits(theObject, etx=(int(splitLocks[0]), int(splitLocks[1])), ety=(int(splitLocks[2]), int(splitLocks[3])), etz=(int(splitLocks[4]), int(splitLocks[5])), erx=(int(splitLocks[6]), int(splitLocks[7])), ery=(int(splitLocks[8]), int(splitLocks[9])), erz=(int(splitLocks[10]), int(splitLocks[11])) )
 
                             if cs.nodeName == 'Limits':
                                 for ai in attrItems:
                                     splitLocks = ai[1].split(' ')
-                                    #for sl in splitLocks:
                                     cmds.transformLimits(theObject, tx=(float(splitLocks[0]), float(splitLocks[1])), ty=(float(splitLocks[2]), float(splitLocks[3])), tz=(float(splitLocks[4]), float(splitLocks[5])), rx=(float(splitLocks[6]), float(splitLocks[7])), ry=(float(splitLocks[8]), float(splitLocks[9])), rz=(float(splitLocks[10]), float(splitLocks[11])) )
 
                         else:
@@ -575,11 +501,8 @@ class attrUtilities(object):
 
 
     def setEnumAttrWithString(self, node,attr,value):
-        #print node,attr,value
         enumString=cmds.attributeQuery(attr,node=node, listEnum=1)[0]
-        #print 'enumString', enumString
         enumList=enumString.split(":")
-        #print enumList
         if value in enumList:
             index=enumList.index(value)
             cmds.setAttr(node+"."+attr,index)
