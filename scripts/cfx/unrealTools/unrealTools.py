@@ -85,8 +85,6 @@ class unrealTools(object):
     #exports the list of attrs as a text file for a pose asset and a modify curve node for ABP
     def exportRigPoseData(self, filename, attrs):
 
-        #attrs = self.__attrutil.getSelectedChannels()
-
         #write attrs to file for when you convert to a pose asset in Unreal
         self.__attrutil.saveAttrNamesToFile(filename, attrs)
 

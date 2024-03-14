@@ -1,6 +1,6 @@
 import maya.cmds as cmds
 
-class sysSettings(object):
+class rigSettings(object):
     
     def __init__(self):
 

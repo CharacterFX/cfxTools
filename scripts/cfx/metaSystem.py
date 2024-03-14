@@ -140,7 +140,7 @@ class metaSystem(object):
                 if cmds.getAttr(node+'.system') == system:
                     returnNodes.append(node)
 
-        if system is not '':
+        if system != '':
             return returnNodes
 
         else:

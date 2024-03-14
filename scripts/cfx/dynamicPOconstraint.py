@@ -4,7 +4,7 @@ A script that sets up a fadeable point and orient constraint
 Author: John Riggs
 '''
 
-import rtsp.returnUseableChannels as ruc
+import cfx.returnUseableChannels as ruc
 
 import maya.cmds as cmds
 
