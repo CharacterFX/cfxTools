@@ -25,6 +25,6 @@ class moduleTools(object):
             print('Reloading Module: ', md)
             if self.pythonVer > 2:
                 import importlib
-                importlib.importlib.reload(md)
+                importlib.reload(md)
             else:
                 importlib.reload(md)
